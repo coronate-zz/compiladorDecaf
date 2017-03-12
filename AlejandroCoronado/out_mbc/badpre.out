@@ -1,1 +1,10 @@
-./pruebas.sh: line 11: ./dcc: cannot execute binary file: Exec format error
+
+*** Error.
+*** Input ends with unterminated comment
+
+
+*** Error.
+*** Input ends with unterminated comment
+
+*            line 8 cols 1-1 is '*' 
+/            line 8 cols 2-2 is '/' 

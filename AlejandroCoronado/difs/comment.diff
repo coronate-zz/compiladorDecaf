@@ -1,4 +1,4 @@
 1c1
-< ./pruebas.sh: line 11: ./dcc: cannot execute binary file: Exec format error
+< "all done!"  line 16 cols 1-11 is T_StringConstant (value = (null))
 ---
 > "all done!"  line 16 cols 1-11 is T_StringConstant (value = "all done!")

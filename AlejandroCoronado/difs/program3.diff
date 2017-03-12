@@ -1,6 +1,4 @@
-1c1,78
-< ./pruebas.sh: line 23: ./dcc: cannot execute binary file: Exec format error
----
+0a1,78
 > class        line 3 cols 1-5 is T_Class 
 > Animal       line 3 cols 7-12 is T_Identifier 
 > {            line 3 cols 14-14 is '{' 

@@ -29,28 +29,28 @@ void yyerror(char *msg); // standard error-handling routine
     bool           boolConstant;
     char*          stringConstant;
     double         doubleConstant;
-    char           identifier[MaxIdentLen+1]; // +1 for terminating null
-    Decl*          decl;
-    FnDecl*        fnDecl;
-    List< Decl* >*      declList;
-    Type*               varType;
-    VarDecl*            varDecl;
-    InterfaceDecl*      interfaceDecl;
-    List< Decl* >*      prototypeList;
-    List< VarDecl* >*   varDeclList;
-    StmtBlock*          stmtBlock;
-    Stmt*               stmt;
-    List< Stmt* >*      stmtList;
-    Expr*               expr;
-    List< Expr* >*      exprList;
-    Call*               call;
-    WhileStmt*          whileStmt;
-    ForStmt*            forStmt;
-    ReturnStmt*         returnStmt;
-    IfStmt*             ifStmt;
-    PrintStmt*          printStmt;
-    ClassDecl*          classDecl;
-    List< NamedType* >* interfaceList;
+    char           identifier[MaxIdentLen+1];
+    Decl*          decl_union;
+    FnDecl*        funcionDecl_union;
+    List< Decl* >*      declList_union;
+    Type*               varType_union;
+    VarDecl*            varDecl_union;
+    InterfaceDecl*      interfaceDecl_union;
+    List< Decl* >*      prototypeList_union;
+    List< VarDecl* >*   varDeclList_union;
+    StmtBlock*          stmtBlock_union;
+    Stmt*               stmt_union;
+    List< Stmt* >*      stmtList_union;
+    Expr*               expr_union;
+    List< Expr* >*      exprList_union;
+    Call*               call_union;
+    WhileStmt*          whileStmt_union;
+    ForStmt*            forStmt_union;
+    ReturnStmt*         returnStmt_union;
+    IfStmt*             ifStmt_union;
+    PrintStmt*          printStmt_union;
+    ClassDecl*          classDecl_union;
+    List< NamedType* >* interfaceList_union;
 }
 
 
@@ -67,39 +67,39 @@ void yyerror(char *msg); // standard error-handling routine
 
 
 
-%type <call>          Call
-%type <exprList>      AExpr
-%type <exprList>      Actuals
-%type <ifStmt>        IfStmt
-%type <whileStmt>     WhileStmt
-%type <forStmt>       ForStmt
-%type <returnStmt>    ReturnStmt
-%type <printStmt>     PrintStmt
-%type <exprList>      PrintList
-%type <classDecl>     ClassDecl
-%type <declList>      FieldList
-%type <interfaceList> InterfaceList
-%type <decl>          Field
-%type <interfaceList> AInterface
-%type <declList>      DeclList 
-%type <decl>          Decl
-%type <varType>       Type
-%type <varDecl>       VariableDecl
-%type <varDecl>       Variable
-%type <interfaceDecl> InterfaceDecl
-%type <decl>          Prototype
-%type <prototypeList> PrototypeList
-%type <varDecl>       Param
-%type <varDeclList>   ParamsList
-%type <varDeclList>   AParam
-%type <fnDecl>        FunctionDecl
-%type <stmtBlock>     StmtBlock
-%type <varDeclList>   VariableDeclList
-%type <stmtList>      StmtList
-%type <stmt>          Stmt
-%type <expr>          Expr
-%type <expr>          Constant
-%type <expr>          LValue
+%type <call_union>                            Call
+%type <exprList_union>                  AExpr
+%type <exprList_union>                  Actuals
+%type <ifStmt_union>                    IfStmt
+%type <whileStmt_union>                 WhileStmt
+%type <forStmt_union>                   ForStmt
+%type <returnStmt_union>                ReturnStmt
+%type <printStmt_union>     PrintStmt
+%type <exprList_union>      PrintList
+%type <classDecl_union>     ClassDecl
+%type <declList_union>      FieldList
+%type <interfaceList_union> InterfaceList
+%type <decl_union>          Field
+%type <interfaceList_union> AInterface
+%type <declList_union>      DeclList 
+%type <decl_union>          Decl
+%type <varType_union>       Type
+%type <varDecl_union>       VariableDecl
+%type <varDecl_union>       Variable
+%type <interfaceDecl_union> InterfaceDecl
+%type <decl_union>          Prototype
+%type <prototypeList_union> PrototypeList
+%type <varDecl_union>       Param
+%type <varDeclList_union>   ParamsList
+%type <varDeclList_union>   AParam
+%type <funcionDecl_union>        FunctionDecl
+%type <stmtBlock_union>     StmtBlock
+%type <varDeclList_union>   VariableDeclList
+%type <stmtList_union>      StmtList
+%type <stmt_union>          Stmt
+%type <expr_union>          Expr
+%type <expr_union>          Constant
+%type <expr_union>          LValue
 
 %nonassoc '='
 %left T_Or
@@ -181,8 +181,6 @@ Prototype : Type T_Identifier '(' ParamsList ')' ';'                      {
 ParamsList : Param AParam     { ($$ = $2)->InsertAt($1, 0); }
            |                  { $$ = new List< VarDecl* >(); }
            ;
-
-
 
 
 AParam : ',' Param AParam     { ($$ = $3)->InsertAt($2, 0); }
@@ -300,13 +298,6 @@ PrintList  : Expr AExpr           { ($$ = $2)->InsertAt($1, 0); }
 
 
 
-
-
-
-
-
-
-
 Expr  : LValue '=' Expr           { $$ = new AssignExpr($1, new Operator(@2, "="), $3); }
       | Expr '+' Expr             { $$ = new ArithmeticExpr($1, new Operator(@2, "+"), $3); }
       | Expr '-' Expr             { $$ = new ArithmeticExpr($1, new Operator(@2, "-"), $3); }
@@ -336,11 +327,6 @@ Expr  : LValue '=' Expr           { $$ = new AssignExpr($1, new Operator(@2, "="
       | Call                                           { $$ = $1; }
       | '(' Expr ')'                                   { $$ = $2; }
       ;
-
-
-
-
-
 
 
 LValue  : T_Identifier           { $$ = new FieldAccess(NULL, new Identifier(@1, $1)); }
