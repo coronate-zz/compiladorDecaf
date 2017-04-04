@@ -1,0 +1,30 @@
+116,120c116,123
+< (\"[^\n\"]*\")                                { //yylval.stringConstant = strdup(yytext); Esta parte de mi codigo no funciona. No tengo la libreria de strdup 
+<                                                           return T_StringConstant;
+<                                                     }
+< 
+< (\"[^\"\n]*)                                   { ReportError::UntermString(&yylloc, yytext);}
+---
+> ((\".*\"))        								        {string stringText(yytext);
+>                                       			int comPos1 = stringText.find("\"");
+>                                       			int comPos2 = stringText.find("\"", comPos1 + 1);
+>                                       			string definition = stringText.substr(comPos1 + 1, comPos2 - (comPos1+1));
+>                                       			string valAsignado = stringText.substr(comPos2 + 1);
+> 												                    //yylval.stringConstant=valAsignado;  No ejecuta usando yylval.stringConstant= yytext
+> 			 									                    yylval.doubleConstant=atof(yytext);
+> 			 									                    return T_StringConstant;}
+121a125
+> (\".*\n+\")										         {ReportError::LongIdentifier(NULL,"Break Line enntre comillas");}
+130,132c134,135
+< ([A-Za-z][A-Za-z0-9_]{32,})						{ReportError::LongIdentifier(&yylloc, yytext);
+<                                       strncpy(yylval.identifier, yytext, MaxIdentLen);
+<                                           return T_Identifier;}
+---
+> ([A-Za-z][A-Za-z0-9_]{32,})						{ReportError::LongIdentifier(NULL,"Identificador demasiado largo");}
+> 
+134c137
+< .                   							{ReportError::UnrecogChar(&yylloc, *yytext);}
+---
+> .                   							{ReportError::UnrecogChar(&yylloc, yytext[0]); }
+155a159
+>     printf("\nInitScanner Ejecucion\n");
