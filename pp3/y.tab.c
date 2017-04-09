@@ -1701,8 +1701,8 @@ yyreduce:
                                       // if no errors, advance to next phase
                                       if (ReportError::NumErrors() == 0)
                                         {
-                                          program->CheckDeclError();
-                                          program->CheckStatements();
+                                          program->errorDeclReview();
+                                          program->ReviewStatements();
                                         }
                                      }
 #line 1709 "y.tab.c" /* yacc.c:1646  */

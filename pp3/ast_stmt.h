@@ -20,9 +20,9 @@ class Program : public Node
 
   public:
      Program(List<Decl*> *declList);
-     void CheckStatements();
-     void CheckDeclError();
-     static Hashtable<Decl*> *sym_table;  
+     void ReviewStatements();
+     void errorDeclReview();
+     static Hashtable<Decl*> *tablaHash;  
 };
 
 class Stmt : public Node
@@ -37,14 +37,14 @@ class StmtBlock : public Stmt
   protected:
     List<VarDecl*> *decls;
     List<Stmt*> *stmts;
-    Hashtable<Decl*> *sym_table;  
+    Hashtable<Decl*> *tablaHash;  
                                   
 
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
-    void CheckStatements();
-    void CheckDeclError();
-    Hashtable<Decl*> *GetSymTable() { return sym_table; }
+    void ReviewStatements();
+    void errorDeclReview();
+    Hashtable<Decl*> *GetSymTable() { return tablaHash; }
 };
 
   
@@ -56,8 +56,8 @@ class ConditionalStmt : public Stmt
 
   public:
     ConditionalStmt(Expr *testExpr, Stmt *body);
-    void CheckStatements();
-    void CheckDeclError();
+    void ReviewStatements();
+    void errorDeclReview();
 };
 
 class LoopStmt : public ConditionalStmt 
@@ -74,14 +74,14 @@ class ForStmt : public LoopStmt
   
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
-    void CheckStatements();
+    void ReviewStatements();
 };
 
 class WhileStmt : public LoopStmt 
 {
   public:
     WhileStmt(Expr *test, Stmt *body) : LoopStmt(test, body) {}
-    void CheckStatements();
+    void ReviewStatements();
  };
 
 class IfStmt : public ConditionalStmt 
@@ -91,15 +91,15 @@ class IfStmt : public ConditionalStmt
   
   public:
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
-    void CheckStatements();
-    void CheckDeclError();
+    void ReviewStatements();
+    void errorDeclReview();
 };
 
 class BreakStmt : public Stmt 
 {
   public:
     BreakStmt(yyltype loc) : Stmt(loc) {}
-    void CheckStatements();
+    void ReviewStatements();
 };
 
 class ReturnStmt : public Stmt  
@@ -109,7 +109,7 @@ class ReturnStmt : public Stmt
   
   public:
     ReturnStmt(yyltype loc, Expr *expr);
-    void CheckStatements();
+    void ReviewStatements();
 };
 
 class PrintStmt : public Stmt
@@ -119,7 +119,7 @@ class PrintStmt : public Stmt
     
   public:
     PrintStmt(List<Expr*> *arguments);
-    void CheckStatements();
+    void ReviewStatements();
 };
 
 
@@ -131,8 +131,8 @@ class DefaultStmt : public Stmt
 
   public:
     DefaultStmt(List<Stmt*> *sts);
-    void CheckStatements();
-    void CheckDeclError();
+    void ReviewStatements();
+    void errorDeclReview();
 };
 
 
@@ -154,8 +154,8 @@ class SwitchStmt : public Stmt
 
   public:
     SwitchStmt(Expr *e, List<CaseStmt*> *cs, DefaultStmt *ds);
-    void CheckStatements();
-    void CheckDeclError();
+    void ReviewStatements();
+    void errorDeclReview();
 };
 
 

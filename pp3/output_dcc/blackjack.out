@@ -1,6 +1,18 @@
 
-*** Error line 65.
-      decks[i] = new Deck;
-                     ^^^^
-*** syntax error
+*** Error line 29.
+    cards = NewArray(52, int);
+          ^
+*** Incompatible operands: Pf =  f‚þ
+
+
+*** Error line 63.
+    decks = NewArray(8, Deck);
+          ^
+*** Incompatible operands: Pf‚ =  f‚þ
+
+
+*** Error line 241.
+    players = NewArray(numPlayers, Player);
+            ^
+*** Incompatible operands: Pf‚ =  f‚þ
 

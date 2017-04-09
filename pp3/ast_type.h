@@ -26,7 +26,7 @@ class Type : public Node
     virtual Type *GetElemType() { return this; }
     virtual const char *GetTypeName() { return typeName; }
     virtual bool HasSameType(Type *t);
-    virtual void CheckTypeError() {}
+    virtual void  errorTypeReview() {}
     friend std::ostream& operator<<(std::ostream &out, Type *type) { if (type) type->print(out); return out; }
 };
 
@@ -42,7 +42,7 @@ class NamedType : public Type
     Type *GetElemType() { return this; }
     const char *GetTypeName() { if (id) return id->GetName(); else return NULL; }
     bool HasSameType(Type *nt);
-    void CheckTypeError();
+    void  errorTypeReview();
 };
 
 class ArrayType : public Type 
@@ -55,7 +55,7 @@ class ArrayType : public Type
     Type *GetElemType() { return elemType; }
     const char *GetTypeName();
     bool HasSameType(Type *at);
-    void CheckTypeError();
+    void  errorTypeReview();
 };
 
 #endif

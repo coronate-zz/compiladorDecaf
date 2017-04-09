@@ -124,8 +124,8 @@ Program   :    DeclList              {
                                       // if no errors, advance to next phase
                                       if (ReportError::NumErrors() == 0)
                                         {
-                                          program->CheckDeclError();
-                                          program->CheckStatements();
+                                          program->errorDeclReview();
+                                          program->ReviewStatements();
                                         }
                                      }
 

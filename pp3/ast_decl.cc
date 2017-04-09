@@ -1,7 +1,3 @@
-/* File: ast_decl.cc
- * -----------------
- * Implementation of Decl node classes.
- */
 
 #include <stdio.h>
 #include <string.h>
@@ -32,14 +28,14 @@ bool VarDecl::HasSameTypeSig(VarDecl *vd) {
     return false;
 }
 
-void VarDecl::CheckStatements() {
+void VarDecl::ReviewStatements() {
    
 }
  
  
-void VarDecl::CheckDeclError() {
+void VarDecl::errorDeclReview() {
   if (this->type)
-    this->type->CheckTypeError();
+    this->type->errorTypeReview();
 }
 
 ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<Decl*> *m) : Decl(n) {
@@ -49,146 +45,17 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
   if (this->extends) this->extends->SetParent(this);
   (this->implements=imp)->SetParentAll(this);
   (this->members=m)->SetParentAll(this);
-  this->sym_table = new Hashtable<Decl*>;
+  this->tablaHash = new Hashtable<Decl*>;
 }
 
-void ClassDecl::CheckStatements() {
+void ClassDecl::ReviewStatements() {
   if (this->members)
     {
       for (int i = 0; i < this->members->NumElements(); i++)
-	this->members->Nth(i)->CheckStatements();
+	this->members->Nth(i)->ReviewStatements();
     }
 }
 
-void ClassDecl::CheckDeclError() {
-   
-  this->sym_table->Enter(this->GetID()->GetName(), this);
-
-   
-  if (this->members)
-    {
-      for (int i = 0; i < this->members->NumElements(); i++)
-        {
-	  Decl *cur = this->members->Nth(i);
-	  Decl *prev;
-	  const char *name = cur->GetID()->GetName();
-	  if (name)
-	    {
-	      if ((prev = this->sym_table->Lookup(name)) != NULL)
-		ReportError::DeclConflict(cur, prev);
-	      else
-		this->sym_table->Enter(name, cur);
-	    }
-        }
-    }
-
-   
-   
-   
-  NamedType *ex = this->extends;
-  while (ex)
-    {
-      const char *name = ex->GetID()->GetName();
-      if (name)
-	{
-	  Node *node = Program::sym_table->Lookup(name);
-	  if (node == NULL)
-	    {
-	      ReportError::IdentifierNotDeclared(ex->GetID(), LookingForClass);
-	      break;
-	    }
-	  else if (typeid(*node) == typeid(ClassDecl))
-	    {
-	      ClassDecl *base = dynamic_cast<ClassDecl*>(node);
-	      List<Decl*> *base_members = base->members;
-	      List<Decl*> *inherited = new List<Decl*>;
-	       
-	      if (base_members)
-		{
-		  for (int i = 0; i < base_members->NumElements(); i++)
-		    {
-		      Decl *cur = base_members->Nth(i);
-		      Decl *prev;
-		      const char *name = cur->GetID()->GetName();
-		      if ((prev = this->sym_table->Lookup(name)) != NULL)
-			{
-			  if (typeid(*cur) == typeid(VarDecl) || typeid(*cur) != typeid(*prev))  
-			    ReportError::DeclConflict(prev, cur);
-			  else if (typeid(*cur) == typeid(FnDecl) && typeid(*cur) == typeid(*prev))  
-			    {
-			      FnDecl *fdcur = dynamic_cast<FnDecl*>(cur);
-			      FnDecl *fdprev = dynamic_cast<FnDecl*>(prev);
-			      if (!fdcur->HasSameTypeSig(fdprev))
-				ReportError::OverrideMismatch(fdprev);
-			    }
-			}
-		      else  
-			 
-			 
-			{
-			  inherited->Append(cur);
-			}
-		    }
-		   for (int i = 0; i < inherited->NumElements(); i++)
-		     {
-		       Decl *decl = inherited->Nth(i);
-		       this->sym_table->Enter(decl->GetID()->GetName(), decl);
-		     }
-		}
-	      ex = base->GetExtends();
-	    }
-	}
-    }
-
-  if (this->implements)
-    {
-      for (int i = 0; i < this->implements->NumElements(); i++)
-	{
-          NamedType *implement = this->implements->Nth(i);
-	  Identifier *id = implement->GetID();
-	  if (id)
-	    {
-	      Node *node = Program::sym_table->Lookup(id->GetName());
-	      if (node == NULL || (typeid(*node) != typeid(InterfaceDecl)))
-		{
-		  ReportError::IdentifierNotDeclared(id, LookingForInterface);
-		}
-	      else if (typeid(*node) == typeid(InterfaceDecl))
-		{
-		  InterfaceDecl *ifd = dynamic_cast<InterfaceDecl*>(node);
-		  List<Decl*> *members = ifd->GetMembers();
-		  for (int j = 0; j < members->NumElements(); j++)
-		    {
-		      FnDecl *cur = dynamic_cast<FnDecl*>(members->Nth(j));
-		      Decl *prev;
-		      const char *name = cur->GetID()->GetName();
-		;
-		      if ((prev = this->sym_table->Lookup(name)) != NULL)
-			{
-			  if (typeid(*prev) != typeid(FnDecl))
-			    ReportError::DeclConflict(cur, prev);
-			  else if (!cur->HasSameTypeSig(dynamic_cast<FnDecl*>(prev)))
-			    ReportError::OverrideMismatch(prev);
-			}
-		      else
-			ReportError::InterfaceNotImplemented(this, implement);
-		    }
-		}
-	    }
-	}
-    }
-
-   
-   
-  if (this->members)
-    {
-      for (int i = 0; i < this->members->NumElements(); i++)
-	this->members->Nth(i)->CheckDeclError();
-    }
-}
-
- 
- 
  
 bool ClassDecl::IsCompatibleWith(Decl *decl)
 {
@@ -208,7 +75,7 @@ bool ClassDecl::IsCompatibleWith(Decl *decl)
            {
              if (name)
                {
-                 Decl *exdecl = Program::sym_table->Lookup(name);
+                 Decl *exdecl = Program::tablaHash->Lookup(name);
                  if (exdecl && typeid(*exdecl) == typeid(ClassDecl))
                    return dynamic_cast<ClassDecl*>(exdecl)->IsCompatibleWith(decl);
                }
@@ -235,7 +102,7 @@ bool ClassDecl::IsCompatibleWith(Decl *decl)
           const char *name = extends->GetTypeName();
           if (name)
             {
-              Decl *exdecl = Program::sym_table->Lookup(name);
+              Decl *exdecl = Program::tablaHash->Lookup(name);
               if (exdecl && typeid(*exdecl) == typeid(ClassDecl))
                 return dynamic_cast<ClassDecl*>(exdecl)->IsCompatibleWith(decl);
             }
@@ -249,11 +116,11 @@ bool ClassDecl::IsCompatibleWith(Decl *decl)
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
   Assert(n != NULL && m != NULL);
   (this->members=m)->SetParentAll(this);
-  this->sym_table  = new Hashtable<Decl*>;
+  this->tablaHash  = new Hashtable<Decl*>;
 }
 
 
-void InterfaceDecl::CheckDeclError() {
+void InterfaceDecl::errorDeclReview() {
   if (this->members)
     {
       for (int i = 0; i < this->members->NumElements(); i++)
@@ -263,13 +130,13 @@ void InterfaceDecl::CheckDeclError() {
 	  const char *name = cur->GetID()->GetName();
 	  if (name)
 	    {
-	      if ((prev = this->sym_table->Lookup(name)) != NULL)
+	      if ((prev = this->tablaHash->Lookup(name)) != NULL)
 		{
 		  ReportError::DeclConflict(cur, prev);
 		}
 	      else
 		{
-		  sym_table->Enter(name, cur);
+		  tablaHash->Enter(name, cur);
 		}
 	    }
 	}
@@ -282,7 +149,7 @@ FnDecl::FnDecl(Identifier *n, Type *r, List<VarDecl*> *d) : Decl(n) {
   (this->returnType=r)->SetParent(this);
   (this->formals=d)->SetParentAll(this);
   this->body = NULL;
-  this->sym_table  = new Hashtable<Decl*>;
+  this->tablaHash  = new Hashtable<Decl*>;
 }
 
  
@@ -312,12 +179,12 @@ bool FnDecl::HasSameTypeSig(FnDecl *fd) {
 
 }
 
-void FnDecl::CheckStatements() {
+void FnDecl::ReviewStatements() {
   if (this->body)
-    this->body->CheckStatements();
+    this->body->ReviewStatements();
 }
 
-void FnDecl::CheckDeclError() {
+void FnDecl::errorDeclReview() {
   if (this->formals)
     {
       for (int i = 0; i < this->formals->NumElements(); i++)
@@ -327,22 +194,154 @@ void FnDecl::CheckDeclError() {
 	  const char *name = cur->GetID()->GetName();
 	  if (name)
 	    {
-	      if ((prev = this->sym_table->Lookup(name)) != NULL)
+	      if ((prev = this->tablaHash->Lookup(name)) != NULL)
 		{
 		  ReportError::DeclConflict(cur, prev);
 		}
 	      else
 		{
-		  sym_table->Enter(name, cur);
-		  cur->CheckDeclError();
+		  tablaHash->Enter(name, cur);
+		  cur->errorDeclReview();
 		}
 	    }
 	}
     }
   if (this->body)
-    this->body->CheckDeclError();
+    this->body->errorDeclReview();
 }
 
 void FnDecl::SetFunctionBody(StmtBlock *b) {
   (this->body=b)->SetParent(this);
 }
+
+
+
+void ClassDecl::errorDeclReview() {
+   
+  this->tablaHash->Enter(this->GetID()->GetName(), this);
+
+   
+  if (this->members)
+    {
+      for (int i = 0; i < this->members->NumElements(); i++)
+        {
+	  Decl *cur = this->members->Nth(i);
+	  Decl *prev;
+	  const char *name = cur->GetID()->GetName();
+	  if (name)
+	    {
+	      if ((prev = this->tablaHash->Lookup(name)) != NULL)
+		ReportError::DeclConflict(cur, prev);
+	      else
+		this->tablaHash->Enter(name, cur);
+	    }
+        }
+    }
+
+   
+   
+   
+  NamedType *ex = this->extends;
+  while (ex)
+    {
+      const char *name = ex->GetID()->GetName();
+      if (name)
+	{
+	  Node *node = Program::tablaHash->Lookup(name);
+	  if (node == NULL)
+	    {
+	      ReportError::IdentifierNotDeclared(ex->GetID(), LookingForClass);
+	      break;
+	    }
+	  else if (typeid(*node) == typeid(ClassDecl))
+	    {
+	      ClassDecl *base = dynamic_cast<ClassDecl*>(node);
+	      List<Decl*> *base_members = base->members;
+	      List<Decl*> *inherited = new List<Decl*>;
+	       
+	      if (base_members)
+		{
+		  for (int i = 0; i < base_members->NumElements(); i++)
+		    {
+		      Decl *cur = base_members->Nth(i);
+		      Decl *prev;
+		      const char *name = cur->GetID()->GetName();
+		      if ((prev = this->tablaHash->Lookup(name)) != NULL)
+			{
+			  if (typeid(*cur) == typeid(VarDecl) || typeid(*cur) != typeid(*prev))  
+			    ReportError::DeclConflict(prev, cur);
+			  else if (typeid(*cur) == typeid(FnDecl) && typeid(*cur) == typeid(*prev))  
+			    {
+			      FnDecl *fdcur = dynamic_cast<FnDecl*>(cur);
+			      FnDecl *fdprev = dynamic_cast<FnDecl*>(prev);
+			      if (!fdcur->HasSameTypeSig(fdprev))
+				ReportError::OverrideMismatch(fdprev);
+			    }
+			}
+		      else  
+			 
+			 
+			{
+			  inherited->Append(cur);
+			}
+		    }
+		   for (int i = 0; i < inherited->NumElements(); i++)
+		     {
+		       Decl *decl = inherited->Nth(i);
+		       this->tablaHash->Enter(decl->GetID()->GetName(), decl);
+		     }
+		}
+	      ex = base->GetExtends();
+	    }
+	}
+    }
+
+  if (this->implements)
+    {
+      for (int i = 0; i < this->implements->NumElements(); i++)
+	{
+          NamedType *implement = this->implements->Nth(i);
+	  Identifier *id = implement->GetID();
+	  if (id)
+	    {
+	      Node *node = Program::tablaHash->Lookup(id->GetName());
+	      if (node == NULL || (typeid(*node) != typeid(InterfaceDecl)))
+		{
+		  ReportError::IdentifierNotDeclared(id, LookingForInterface);
+		}
+	      else if (typeid(*node) == typeid(InterfaceDecl))
+		{
+		  InterfaceDecl *ifd = dynamic_cast<InterfaceDecl*>(node);
+		  List<Decl*> *members = ifd->GetMembers();
+		  for (int j = 0; j < members->NumElements(); j++)
+		    {
+		      FnDecl *cur = dynamic_cast<FnDecl*>(members->Nth(j));
+		      Decl *prev;
+		      const char *name = cur->GetID()->GetName();
+		;
+		      if ((prev = this->tablaHash->Lookup(name)) != NULL)
+			{
+			  if (typeid(*prev) != typeid(FnDecl))
+			    ReportError::DeclConflict(cur, prev);
+			  else if (!cur->HasSameTypeSig(dynamic_cast<FnDecl*>(prev)))
+			    ReportError::OverrideMismatch(prev);
+			}
+		      else
+			ReportError::InterfaceNotImplemented(this, implement);
+		    }
+		}
+	    }
+	}
+    }
+
+   
+   
+  if (this->members)
+    {
+      for (int i = 0; i < this->members->NumElements(); i++)
+	this->members->Nth(i)->errorDeclReview();
+    }
+}
+
+ 
+ 

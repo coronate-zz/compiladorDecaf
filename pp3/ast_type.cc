@@ -43,9 +43,9 @@ bool NamedType::HasSameType(Type *nt) {
     return false;
 }
 
-void NamedType::CheckTypeError() {
+void NamedType::errorTypeReview() {
   const char *name = this->id->GetName();
-  Decl *decl = Program::sym_table->Lookup(name);
+  Decl *decl = Program::tablaHash->Lookup(name);
   if ((decl == NULL) || (((typeid(*decl) != typeid(ClassDecl))) && ((typeid(*decl) != typeid(InterfaceDecl)))))
     {
       ReportError::IdentifierNotDeclared(id, LookingForType);
@@ -74,6 +74,6 @@ bool ArrayType::HasSameType(Type *at) {
   return this->elemType->HasSameType(at->GetElemType());
 }
 
-void ArrayType::CheckTypeError() {
-  this->elemType->CheckTypeError();
+void ArrayType::errorTypeReview() {
+  this->elemType->errorTypeReview();
 }

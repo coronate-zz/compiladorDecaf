@@ -41,8 +41,8 @@ class VarDecl : public Decl
   Type *GetType() { return type; }
   const char *GetTypeName() { if (type) return type->GetTypeName(); else return NULL; }
   bool HasSameTypeSig(VarDecl *vd);
-  void CheckStatements();
-  void CheckDeclError();
+  void ReviewStatements();
+  void errorDeclReview();
 };
 
 
@@ -52,30 +52,30 @@ class ClassDecl : public Decl
   List<Decl*> *members;
   NamedType *extends;
   List<NamedType*> *implements;
-  Hashtable<Decl*> *sym_table;
+  Hashtable<Decl*> *tablaHash;
 
  public:
   ClassDecl(Identifier *name, NamedType *extends, 
 	    List<NamedType*> *implements, List<Decl*> *members);
   NamedType *GetExtends() { return extends; }
   List<NamedType*> *GetImplements() { return implements; }
-  void CheckStatements();
-  void CheckDeclError();
+  void ReviewStatements();
+  void errorDeclReview();
   bool IsCompatibleWith(Decl *decl);
-  Hashtable<Decl*> *GetSymTable() { return sym_table; }
+  Hashtable<Decl*> *GetSymTable() { return tablaHash; }
 };
 
 class InterfaceDecl : public Decl 
 {
  protected:
   List<Decl*> *members;
-  Hashtable<Decl*> *sym_table;
+  Hashtable<Decl*> *tablaHash;
 
  public:
   InterfaceDecl(Identifier *name, List<Decl*> *members);
-  void CheckDeclError();
+  void errorDeclReview();
   List<Decl*> *GetMembers() { return members; }
-  Hashtable<Decl*> *GetSymTable() { return sym_table; }
+  Hashtable<Decl*> *GetSymTable() { return tablaHash; }
 
 };
 
@@ -85,18 +85,18 @@ class FnDecl : public Decl
   List<VarDecl*> *formals;
   Type *returnType;
   StmtBlock *body;
-  Hashtable<Decl*> *sym_table;
+  Hashtable<Decl*> *tablaHash;
     
  public:
   FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
   void SetFunctionBody(StmtBlock *b);
-  void CheckStatements();
-  void CheckDeclError();
+  void ReviewStatements();
+  void errorDeclReview();
   Type *GetType() { return returnType; }
   List<VarDecl*> *GetFormals() { return formals; }
   const char *GetTypeName() { if (returnType) return returnType->GetTypeName(); else return NULL; }
   bool HasSameTypeSig(FnDecl *fd);
-  Hashtable<Decl*> *GetSymTable() { return sym_table; }
+  Hashtable<Decl*> *GetSymTable() { return tablaHash; }
 
 };
 

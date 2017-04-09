@@ -8,91 +8,36 @@
 #include "ast_expr.h"
 #include "errors.h"
 
-Hashtable<Decl*> *Program::sym_table  = new Hashtable<Decl*>;
+Hashtable<Decl*> *Program::tablaHash  = new Hashtable<Decl*>;
 
 Program::Program(List<Decl*> *d) {
   Assert(d != NULL);
   (this->decls=d)->SetParentAll(this);
 }
 
-void Program::CheckStatements() {
+void Program::ReviewStatements() {
   for (int i = 0; i < this->decls->NumElements(); i++)
-    this->decls->Nth(i)->CheckStatements();
-}
-
-void Program::CheckDeclError() {
-  if (this->decls)
-    {
-       
-      for (int i = 0; i < this->decls->NumElements(); i++)
-	{
-          Decl *cur = decls->Nth(i);
-          Decl *prev;
-          const char *name = cur->GetID()->GetName();
-	  if (name)
-	    {
-	      if ((prev = Program::sym_table->Lookup(name)) != NULL)
-		ReportError::DeclConflict(cur, prev);
-	      else
-		sym_table->Enter(name, cur);
-	    }
-	}
-      for (int i = 0; i < this->decls->NumElements(); i++)
-	this->decls->Nth(i)->CheckDeclError();
-       
-    }
-
+    this->decls->Nth(i)->ReviewStatements();
 }
 
 StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {
   Assert(d != NULL && s != NULL);
   (this->decls=d)->SetParentAll(this);
   (this->stmts=s)->SetParentAll(this);
-  this->sym_table  = new Hashtable<Decl*>;
+  this->tablaHash  = new Hashtable<Decl*>;
 }
 
-void StmtBlock::CheckStatements() {
+void StmtBlock::ReviewStatements() {
   if (this->stmts)
     {
       for (int i = 0; i < this->stmts->NumElements(); i++)
         {
           Stmt *stmt = this->stmts->Nth(i);
-          stmt->CheckStatements();
+          stmt->ReviewStatements();
         }
     }
 }
 
-void StmtBlock::CheckDeclError() {
-  if (this->decls)
-    {
-      for (int i = 0; i < this->decls->NumElements(); i++)
-        {
-	  VarDecl *cur = this->decls->Nth(i);
-	  Decl *prev;
-	  const char *name = cur->GetID()->GetName();
-	  if (name)
-	    {
-	      if ((prev = this->sym_table->Lookup(name)) != NULL)
-		{
-		  ReportError::DeclConflict(cur, prev);
-		}
-	      else
-		{
-		  sym_table->Enter(name, cur);
-		  cur->CheckDeclError();
-		}
-	    }
-        }
-    }
-  if (this->stmts)
-    {
-      for (int i = 0; i < this->stmts->NumElements(); i++)
-        {
-          Stmt *stmt = stmts->Nth(i);
-          stmt->CheckDeclError();
-        }
-    }
-}
 
 ConditionalStmt::ConditionalStmt(Expr *t, Stmt *b) { 
   Assert(t != NULL && b != NULL);
@@ -100,16 +45,16 @@ ConditionalStmt::ConditionalStmt(Expr *t, Stmt *b) {
   (this->body=b)->SetParent(this);
 }
 
-void ConditionalStmt::CheckStatements() {
-  this->test->CheckStatements();
+void ConditionalStmt::ReviewStatements() {
+  this->test->ReviewStatements();
   if (strcmp(this->test->GetTypeName(), "bool"))
     ReportError::TestNotBoolean(this->test);
 
-  this->body->CheckStatements();
+  this->body->ReviewStatements();
 }
 
-void ConditionalStmt::CheckDeclError() {
-  this->body->CheckDeclError();
+void ConditionalStmt::errorDeclReview() {
+  this->body->errorDeclReview();
 }
 
 ForStmt::ForStmt(Expr *i, Expr *t, Expr *s, Stmt *b): LoopStmt(t, b) { 
@@ -118,16 +63,16 @@ ForStmt::ForStmt(Expr *i, Expr *t, Expr *s, Stmt *b): LoopStmt(t, b) {
   (this->step=s)->SetParent(this);
 }
 
-void ForStmt::CheckStatements() {
+void ForStmt::ReviewStatements() {
   if (this->init)
-    this->init->CheckStatements();
+    this->init->ReviewStatements();
   if (this->step)
-    this->step->CheckStatements();
-  ConditionalStmt::CheckStatements();
+    this->step->ReviewStatements();
+  ConditionalStmt::ReviewStatements();
 }
 
-void WhileStmt::CheckStatements() {
-  ConditionalStmt::CheckStatements();
+void WhileStmt::ReviewStatements() {
+  ConditionalStmt::ReviewStatements();
 }
 
 IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) { 
@@ -136,19 +81,15 @@ IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) {
   if (this->elseBody) elseBody->SetParent(this);
 }
 
-void IfStmt::CheckDeclError() {
-  ConditionalStmt::CheckDeclError();
+
+
+void IfStmt::ReviewStatements() {
+  ConditionalStmt::ReviewStatements();
   if (this->elseBody)
-    this->elseBody->CheckDeclError();
+    this->elseBody->ReviewStatements();
 }
 
-void IfStmt::CheckStatements() {
-  ConditionalStmt::CheckStatements();
-  if (this->elseBody)
-    this->elseBody->CheckStatements();
-}
-
-void BreakStmt::CheckStatements() {
+void BreakStmt::ReviewStatements() {
   Node *parent = this->GetParent();
   while (parent)
     {
@@ -166,7 +107,7 @@ ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) {
   (expr=e)->SetParent(this);
 }
 
-void ReturnStmt::CheckStatements() {
+void ReturnStmt::ReviewStatements() {
 
   const char *expected;
   Node *parent = this->GetParent();
@@ -178,13 +119,13 @@ void ReturnStmt::CheckStatements() {
     }
   if (this->expr)
     {
-      this->expr->CheckStatements();
+      this->expr->ReviewStatements();
       const char *given = expr->GetTypeName();
 
       if (given && expected)
         {
-          Decl *gdecl = Program::sym_table->Lookup(given);
-          Decl *edecl = Program::sym_table->Lookup(expected);
+          Decl *gdecl = Program::tablaHash->Lookup(given);
+          Decl *edecl = Program::tablaHash->Lookup(expected);
 
           if (gdecl && edecl)  
             {
@@ -214,13 +155,13 @@ PrintStmt::PrintStmt(List<Expr*> *a) {
   (args=a)->SetParentAll(this);
 }
 
-void PrintStmt::CheckStatements() {
+void PrintStmt::ReviewStatements() {
   if (this->args)
     {
       for (int i = 0; i < this->args->NumElements(); i++)
         {
           Expr *expr = this->args->Nth(i);
-          expr->CheckStatements();
+          expr->ReviewStatements();
           const char *typeName = expr->GetTypeName();
           if (typeName && strcmp(typeName, "string") && strcmp(typeName, "int") && strcmp(typeName, "bool"))
             ReportError::PrintArgMismatch(expr, (i+1), new Type(typeName));
@@ -237,27 +178,17 @@ DefaultStmt::DefaultStmt(List<Stmt*> *sts) {
   if (sts) (this->stmts=sts)->SetParentAll(this);
 }
 
-void DefaultStmt::CheckStatements() {
+void DefaultStmt::ReviewStatements() {
   if (this->stmts)
     {
       for (int i = 0; i < this->stmts->NumElements(); i++)
         {
           Stmt *stmt = this->stmts->Nth(i);
-          stmt->CheckStatements();
+          stmt->ReviewStatements();
         }
     }
 }
 
-void DefaultStmt::CheckDeclError() {
-  if (this->stmts)
-    {
-      for (int i = 0; i < this->stmts->NumElements(); i++)
-        {
-          Stmt *stmt = this->stmts->Nth(i);
-          stmt->CheckDeclError();
-        }
-    }
-}
 
 SwitchStmt::SwitchStmt(Expr *e, List<CaseStmt*> *cs, DefaultStmt *ds) {
   Assert(e != NULL && cs != NULL);
@@ -267,33 +198,107 @@ SwitchStmt::SwitchStmt(Expr *e, List<CaseStmt*> *cs, DefaultStmt *ds) {
    (this->defaults=ds)->SetParent(this);
 }
 
-void SwitchStmt::CheckStatements() {
+void SwitchStmt::ReviewStatements() {
   if (this->expr)
-    this->expr->CheckStatements();
+    this->expr->ReviewStatements();
 
   if (this->cases)
     {
       for (int i = 0; i < this->cases->NumElements(); i++)
         {
           CaseStmt *stmt = this->cases->Nth(i);
-          stmt->CheckStatements();
+          stmt->ReviewStatements();
         }
     }
 
   if (this->defaults)
-    this->defaults->CheckStatements();
+    this->defaults->ReviewStatements();
 }
 
-void SwitchStmt::CheckDeclError() {
+void SwitchStmt::errorDeclReview() {
   if (this->cases)
     {
       for (int i = 0; i < this->cases->NumElements(); i++)
         {
           CaseStmt *stmt = this->cases->Nth(i);
-          stmt->CheckDeclError();
+          stmt->errorDeclReview();
         }
     }
 
   if (this->defaults)
-    this->defaults->CheckDeclError();
+    this->defaults->errorDeclReview();
+}
+
+void StmtBlock::errorDeclReview() {
+  if (this->decls)
+    {
+      for (int i = 0; i < this->decls->NumElements(); i++)
+        {
+    VarDecl *cur = this->decls->Nth(i);
+    Decl *prev;
+    const char *name = cur->GetID()->GetName();
+    if (name)
+      {
+        if ((prev = this->tablaHash->Lookup(name)) != NULL)
+    {
+      ReportError::DeclConflict(cur, prev);
+    }
+        else
+    {
+      tablaHash->Enter(name, cur);
+      cur->errorDeclReview();
+    }
+      }
+        }
+    }
+  if (this->stmts)
+    {
+      for (int i = 0; i < this->stmts->NumElements(); i++)
+        {
+          Stmt *stmt = stmts->Nth(i);
+          stmt->errorDeclReview();
+        }
+    }
+}
+
+void DefaultStmt::errorDeclReview() {
+  if (this->stmts)
+    {
+      for (int i = 0; i < this->stmts->NumElements(); i++)
+        {
+          Stmt *stmt = this->stmts->Nth(i);
+          stmt->errorDeclReview();
+        }
+    }
+}
+
+
+void IfStmt::errorDeclReview() {
+  ConditionalStmt::errorDeclReview();
+  if (this->elseBody)
+    this->elseBody->errorDeclReview();
+}
+
+void Program::errorDeclReview() {
+  if (this->decls)
+    {
+       
+      for (int i = 0; i < this->decls->NumElements(); i++)
+  {
+          Decl *cur = decls->Nth(i);
+          Decl *prev;
+          const char *name = cur->GetID()->GetName();
+    if (name)
+      {
+        if ((prev = Program::tablaHash->Lookup(name)) != NULL)
+    ReportError::DeclConflict(cur, prev);
+        else
+    tablaHash->Enter(name, cur);
+      }
+  }
+      for (int i = 0; i < this->decls->NumElements(); i++)
+  this->decls->Nth(i)->errorDeclReview();
+       
+    }
+
 }

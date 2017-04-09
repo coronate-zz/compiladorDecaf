@@ -27,8 +27,8 @@ class Node  {
   void SetParent(Node *p)  { parent = p; }
   Node *GetParent()        { return parent; }
 
-  virtual void CheckDeclError() {}
-  virtual void CheckStatements() {}
+  virtual void errorDeclReview() {}
+  virtual void ReviewStatements() {}
   virtual Hashtable<Decl*> *GetSymTable() { return NULL; }
 };
    
@@ -41,8 +41,8 @@ class Identifier : public Node
  public:
   Identifier(yyltype loc, const char *name);
   const char *GetName() { return name; }
-  Decl *CheckIdDecl();
-  Decl *CheckIdDecl(Hashtable<Decl*> *sym_table, const char *name);
+  Decl *ReviewIdDecl();
+  Decl *ReviewIdDecl(Hashtable<Decl*> *tablaHash, const char *name);
   friend std::ostream& operator<<(std::ostream& out, Identifier *id) { if (id) return out << id->name; else return out;}
 };
 
