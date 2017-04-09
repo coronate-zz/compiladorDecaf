@@ -1,0 +1,7 @@
+1,6d0
+< 
+< *** Error line 65.
+<       decks[i] = new Deck;
+<                      ^^^^
+< *** syntax error
+< 

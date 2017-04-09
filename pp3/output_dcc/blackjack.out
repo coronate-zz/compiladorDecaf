@@ -1,0 +1,6 @@
+
+*** Error line 65.
+      decks[i] = new Deck;
+                     ^^^^
+*** syntax error
+

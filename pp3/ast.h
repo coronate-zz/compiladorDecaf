@@ -1,4 +1,5 @@
-/* File: ast.h
+/**
+ * File: ast.h
  * ----------- 
  * This file defines the abstract base class Node and the concrete 
  * Identifier and Error node subclasses that are used through the tree as 
@@ -30,33 +31,47 @@
 #define _H_ast
 
 #include <stdlib.h>   // for NULL
-#include "location.h"
+
 #include <iostream>
 
-class Node 
-{
-  protected:
-    yyltype *location;
-    Node *parent;
+#include "errors.h"
+#include "hashtable.h"
+#include "list.h"
+#include "location.h"
 
-  public:
-    Node(yyltype loc);
-    Node();
+class Decl;
+
+class Node  {
+ protected:
+  yyltype *location;
+  Node *parent;
+
+ public:
+  Node(yyltype loc);
+  Node();
+  virtual ~Node() {}
     
-    yyltype *GetLocation()   { return location; }
-    void SetParent(Node *p)  { parent = p; }
-    Node *GetParent()        { return parent; }
+  yyltype *GetLocation()   { return location; }
+  void SetParent(Node *p)  { parent = p; }
+  Node *GetParent()        { return parent; }
+
+  virtual void CheckDeclError() {}
+  virtual void CheckStatements() {}
+  virtual Hashtable<Decl*> *GetSymTable() { return NULL; }
 };
    
 
 class Identifier : public Node 
 {
-  protected:
-    char *name;
+ protected:
+  char *name;
     
-  public:
-    Identifier(yyltype loc, const char *name);
-    friend std::ostream& operator<<(std::ostream& out, Identifier *id) { return out << id->name; }
+ public:
+  Identifier(yyltype loc, const char *name);
+  const char *GetName() { return name; }
+  Decl *CheckIdDecl();
+  Decl *CheckIdDecl(Hashtable<Decl*> *sym_table, const char *name);
+  friend std::ostream& operator<<(std::ostream& out, Identifier *id) { if (id) return out << id->name; else return out;}
 };
 
 
@@ -67,10 +82,8 @@ class Identifier : public Node
 // when your parser can continue after an error.
 class Error : public Node
 {
-  public:
-    Error() : Node() {}
+ public:
+ Error() : Node() {}
 };
-
-
 
 #endif

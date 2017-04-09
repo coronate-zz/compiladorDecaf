@@ -1,0 +1,6 @@
+
+*** Error line 109.
+      elem = new SparseItem;
+                 ^^^^^^^^^^
+*** syntax error
+
