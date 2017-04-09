@@ -1,7 +1,4 @@
-/* File: ast_stmt.cc
- * -----------------
- * Implementation of statement node classes.
- */
+
 
 #include <typeinfo>
 
@@ -26,7 +23,7 @@ void Program::CheckStatements() {
 void Program::CheckDeclError() {
   if (this->decls)
     {
-      // check if identifiers in the global scope are unique
+       
       for (int i = 0; i < this->decls->NumElements(); i++)
 	{
           Decl *cur = decls->Nth(i);
@@ -42,7 +39,7 @@ void Program::CheckDeclError() {
 	}
       for (int i = 0; i < this->decls->NumElements(); i++)
 	this->decls->Nth(i)->CheckDeclError();
-      // all the declarations should be added to hashtables of their scopes
+       
     }
 
 }
@@ -134,7 +131,7 @@ void WhileStmt::CheckStatements() {
 }
 
 IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) { 
-  Assert(t != NULL && tb != NULL); // else can be NULL
+  Assert(t != NULL && tb != NULL);  
   this->elseBody = eb;
   if (this->elseBody) elseBody->SetParent(this);
 }
@@ -189,7 +186,7 @@ void ReturnStmt::CheckStatements() {
           Decl *gdecl = Program::sym_table->Lookup(given);
           Decl *edecl = Program::sym_table->Lookup(expected);
 
-          if (gdecl && edecl) // objects
+          if (gdecl && edecl)  
             {
               if (!strcmp(given, expected))
                 return;

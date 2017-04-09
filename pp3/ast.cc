@@ -1,10 +1,6 @@
-/* File: ast.cc
- * ------------
- */
 
-#include <stdio.h>  // printf
-#include <string.h> // strdup
-
+#include <stdio.h>   
+#include <string.h>  
 #include "ast.h"
 #include "ast_decl.h"
 #include "ast_stmt.h"
@@ -25,7 +21,6 @@ Identifier::Identifier(yyltype loc, const char *n) : Node(loc) {
   this->name = strdup(n);
 }
 
-// look for declaration from inner most scope to global scope
 Decl *Identifier::CheckIdDecl() {
   Decl *decl = NULL;
   Node *parent = this->GetParent();
@@ -45,7 +40,7 @@ Decl *Identifier::CheckIdDecl() {
   return decl;
 }
 
-// look for declaration in the provided scope
+ 
 Decl *Identifier::CheckIdDecl(Hashtable<Decl*> *sym_table, const char *name)
 {
   Decl *decl = NULL;

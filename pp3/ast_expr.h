@@ -1,10 +1,4 @@
-/* File: ast_expr.h
-* ----------------
-* The Expr class and its subclasses are used to represent
-* expressions in the parse tree. For each expression in the
-* language (add, call, New, etc.) there is a corresponding
-* node class for that construct.
-*/
+
 
 
 #ifndef _H_ast_expr
@@ -31,9 +25,6 @@ class Expr : public Stmt
     virtual const char *GetTypeName() { if (type) return type->GetTypeName(); else return NULL;}
 };
 
-/* This node type is used for those places where an expression is optional.
-* We could use a NULL pointer, but then it adds a lot of checking for
-* NULL. By using a valid, but no-op, node, we save that trouble */
 class EmptyExpr : public Expr
 {
 };
@@ -94,11 +85,11 @@ class CompoundExpr : public Expr
 {
   protected:
     Operator *op;
-    Expr *left, *right; // left will be NULL if unary
+    Expr *left, *right;  
     
   public:
-    CompoundExpr(Expr *lhs, Operator *op, Expr *rhs); // for binary
-    CompoundExpr(Operator *op, Expr *rhs); // for unary
+    CompoundExpr(Expr *lhs, Operator *op, Expr *rhs);  
+    CompoundExpr(Operator *op, Expr *rhs);  
 };
 
 class ArithmeticExpr : public CompoundExpr
@@ -182,13 +173,13 @@ class ArrayAccess : public LValue
 class FieldAccess : public LValue
 {
   protected:
-    Expr *base; // will be NULL if no explicit base
+    Expr *base;  
     Identifier *field;
-    Type *type; // Expr::type is protected and thus not inherited here
+    Type *type;  
     
   public:
-    FieldAccess(Expr *base, Identifier *field); // ok to pass NULL base
-    void CheckStatements(); // its type is decided here
+    FieldAccess(Expr *base, Identifier *field);  
+    void CheckStatements();  
     Identifier *GetField() { return field; }
     Type *GetType() { return type; }
     const char *GetTypeName() { if (type) return type->GetTypeName(); else return NULL; }
@@ -201,14 +192,14 @@ class FieldAccess : public LValue
 class Call : public Expr
 {
   protected:
-    Expr *base; // will be NULL if no explicit base
+    Expr *base;  
     Identifier *field;
     List<Expr*> *actuals;
     
   public:
     Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
-    void CheckArguments(FnDecl *fndecl); // check arguments against formal parameters
-    void CheckStatements(); // its type is decided here
+    void CheckArguments(FnDecl *fndecl);  
+    void CheckStatements();  
     Type *GetType() { return type; }
     const char *GetTypeName() { if (type) return type->GetTypeName(); else return NULL; }
 };

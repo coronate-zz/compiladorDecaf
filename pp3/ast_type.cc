@@ -1,7 +1,3 @@
-/* File: ast_type.cc
- * -----------------
- * Implementation of type node classes.
- */
 
 #include <string.h>
 
@@ -12,13 +8,6 @@
 #include "ast_stmt.h"
 #include "errors.h"
 
-/* Class constants
- * ---------------
- * These are public constants for the built-in base types (int, double, etc.)
- * They can be accessed with the syntax Type::intType. This allows you to
- * directly access them and share the built-in types where needed rather that
- * creates lots of copies.
- */
 
 Type *Type::intType    = new Type("int");
 Type *Type::doubleType = new Type("double");
@@ -34,11 +23,11 @@ Type::Type(const char *n) {
 }
 
 bool Type::HasSameType(Type *t) {
-  // const char *typeName2 = t->GetTypeName();
-  // if (this->typeName && typeName2)
-  //   return !strcmp(this->typeName, typeName2);
-  // else
-  //   return false;
+   
+   
+   
+   
+   
   return this == t;
 }
 

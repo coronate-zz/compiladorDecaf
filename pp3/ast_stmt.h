@@ -1,13 +1,3 @@
-/* File: ast_stmt.h
- * ----------------
- * The Stmt class and its subclasses are used to represent
- * statements in the parse tree.  For each statment in the
- * language (for, if, return, etc.) there is a corresponding
- * node class for that construct. 
- *
- * pp2: You will need to add new expression and statement node c
- * classes for the additional grammar elements (Switch/Postfix)
- */
 
 
 #ifndef _H_ast_stmt
@@ -32,7 +22,7 @@ class Program : public Node
      Program(List<Decl*> *declList);
      void CheckStatements();
      void CheckDeclError();
-     static Hashtable<Decl*> *sym_table; // global symbol table
+     static Hashtable<Decl*> *sym_table;  
 };
 
 class Stmt : public Node
@@ -47,8 +37,8 @@ class StmtBlock : public Stmt
   protected:
     List<VarDecl*> *decls;
     List<Stmt*> *stmts;
-    Hashtable<Decl*> *sym_table; // keep a symbol table for every local scope
-                                 // no need for removal when leaving the scope
+    Hashtable<Decl*> *sym_table;  
+                                  
 
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);

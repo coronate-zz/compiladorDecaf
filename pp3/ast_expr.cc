@@ -1,7 +1,3 @@
-/* File: ast_expr.cc
- * -----------------
- * Implementation of expression node classes.
- */
 
 #include <string.h>
 
@@ -65,7 +61,7 @@ CompoundExpr::CompoundExpr(Operator *o, Expr *r)
   
 void ArithmeticExpr::CheckStatements() {
   const char *lt = NULL, *rt = NULL;
-  if (this->left) // binary
+  if (this->left)  
     {
       this->left->CheckStatements();
       lt = this->left->GetTypeName();
@@ -73,14 +69,14 @@ void ArithmeticExpr::CheckStatements() {
 
   this->right->CheckStatements();
   rt = this->right->GetTypeName();
-  if (lt && rt) // binary
+  if (lt && rt)  
     {
       if ((strcmp(lt, "int") && strcmp(lt, "double")) ||
           (strcmp(rt, "int") && strcmp(rt, "double")) ||
           (strcmp(lt, rt)))
         ReportError::IncompatibleOperands(this->op, new Type(lt), new Type(rt));
     }
-  else if (rt) // unary
+  else if (rt)  
     {
       if (strcmp(rt, "int") && strcmp(rt, "double"))
         ReportError::IncompatibleOperand(this->op, new Type(rt));
@@ -93,7 +89,7 @@ void RelationalExpr::CheckStatements() {
 
   this->right->CheckStatements();
   const char *rt = this->right->GetTypeName();
-  if (lt && rt) // binary
+  if (lt && rt)  
     {
       if ((strcmp(lt, "int") && strcmp(lt, "double")) ||
 	  (strcmp(rt, "int") && strcmp(rt, "double")) ||
@@ -112,7 +108,7 @@ void EqualityExpr::CheckStatements() {
       Decl *ldecl = Program::sym_table->Lookup(lt);
       Decl *rdecl = Program::sym_table->Lookup(rt);
 
-      if (ldecl && rdecl) // objects
+      if (ldecl && rdecl)  
 	{
 	  if (!strcmp(lt, rt))
 	    return;
@@ -129,9 +125,9 @@ void EqualityExpr::CheckStatements() {
 		return;
 	    }
 	}
-      else if (ldecl && !strcmp(rt, "null")) // object = null
+      else if (ldecl && !strcmp(rt, "null"))  
 	return;
-      else if (!strcmp(lt, rt)) // non-objects
+      else if (!strcmp(lt, rt))  
 	return;
     }
   ReportError::IncompatibleOperands(this->op, new Type(lt), new Type(rt));
@@ -170,7 +166,7 @@ void AssignExpr::CheckStatements() {
       Decl *ldecl = Program::sym_table->Lookup(lt);
       Decl *rdecl = Program::sym_table->Lookup(rt);
 
-      if (ldecl && rdecl) // objects
+      if (ldecl && rdecl)  
         {
           if (!strcmp(lt, rt))
             return;
@@ -181,9 +177,9 @@ void AssignExpr::CheckStatements() {
 		return;
 	    }
         }
-      else if (ldecl && !strcmp(rt, "null")) // object = null
+      else if (ldecl && !strcmp(rt, "null"))  
 	return;
-      else if (!strcmp(lt, rt)) // non-objects
+      else if (!strcmp(lt, rt))  
 	return;
       ReportError::IncompatibleOperands(this->op, new Type(lt), new Type(rt));
     }
@@ -235,25 +231,25 @@ void ArrayAccess::CheckStatements() {
 
 FieldAccess::FieldAccess(Expr *b, Identifier *f) 
   : LValue(b? Join(b->GetLocation(), f->GetLocation()) : *f->GetLocation()) {
-  Assert(f != NULL); // b can be be NULL (just means no explicit base)
+  Assert(f != NULL);  
   this->base = b; 
   if (this->base) base->SetParent(this); 
   (this->field=f)->SetParent(this);
 }
 
 void FieldAccess::CheckStatements() {
-  Decl *decl = NULL; // to keep the result of looking up the symbol table
+  Decl *decl = NULL;  
   if (this->base)
     {
-      this->base->CheckStatements();  // whether base is declared
+      this->base->CheckStatements();   
       const char *name = this->base->GetTypeName();
 
       if (name)
 	{
 	  Node *parent = this->GetParent();
-	  Decl *cldecl = NULL; // look for ClassDecl
-	  // whether the base is this
-	  // otherwise the variable is inaccessible
+	  Decl *cldecl = NULL;  
+	   
+	   
 	  while (parent)
 	    {
 	      Hashtable<Decl*> *sym_table = parent->GetSymTable();
@@ -268,28 +264,28 @@ void FieldAccess::CheckStatements() {
 	    }
 	  if (cldecl == NULL)
 	    {
-	      if ((cldecl = Program::sym_table->Lookup(name)) != NULL) // look up global symbol table
+	      if ((cldecl = Program::sym_table->Lookup(name)) != NULL)  
 	        {
 	          decl = this->field->CheckIdDecl(cldecl->GetSymTable(), this->field->GetName());
 	          if ((decl != NULL) && (typeid(*decl) == typeid(VarDecl)))
-	            ReportError::InaccessibleField(this->field, new Type(name)); // data member is private
+	            ReportError::InaccessibleField(this->field, new Type(name));  
 	          else
-	            ReportError::FieldNotFoundInBase(this->field, new Type(name)); // no such field
+	            ReportError::FieldNotFoundInBase(this->field, new Type(name));  
 	        }
-	      else // for those with no symbol tables, e.g. int[]
+	      else  
 		ReportError::FieldNotFoundInBase(this->field, new Type(name));
 	    }
 	}
     }
   else
     {
-      // no base, just check whether the field is declared
+       
       decl = this->field->CheckIdDecl();
       if (decl == NULL || typeid(*decl) != typeid(VarDecl))
         {
           ReportError::IdentifierNotDeclared(this->field, LookingForVariable);
-          decl = NULL; // to force not to get the type
-                       // and avoid cascading error reports
+          decl = NULL;  
+                        
         }
     }
   if (decl != NULL)
@@ -297,7 +293,7 @@ void FieldAccess::CheckStatements() {
 }
 
 Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
-  Assert(f != NULL && a != NULL); // b can be be NULL (just means no explicit base)
+  Assert(f != NULL && a != NULL);  
   this->base = b;
   if (this->base) base->SetParent(this);
   (this->field=f)->SetParent(this);
@@ -327,7 +323,7 @@ void Call::CheckArguments(FnDecl *fndecl) {
               Decl *gdecl = Program::sym_table->Lookup(given);
               Decl *edecl = Program::sym_table->Lookup(expected);
 
-              if (gdecl && edecl) // objects
+              if (gdecl && edecl)  
                 {
                   if (strcmp(given, expected))
 		    if (typeid(*gdecl) == typeid(ClassDecl))
@@ -337,9 +333,9 @@ void Call::CheckArguments(FnDecl *fndecl) {
 			  ReportError::ArgMismatch(expr, (i+1), new Type(given), new Type(expected));
 		      }
                 }
-              else if (edecl && strcmp(given, "null")) // null arguments
+              else if (edecl && strcmp(given, "null"))  
 		ReportError::ArgMismatch(expr, (i+1), new Type(given), new Type(expected));
-              else if (gdecl == NULL && edecl == NULL && strcmp(given, expected)) // non-object arguments
+              else if (gdecl == NULL && edecl == NULL && strcmp(given, expected))  
                 ReportError::ArgMismatch(expr, (i+1), new Type(given), new Type(expected));
 	    }
 	}
@@ -359,8 +355,8 @@ void Call::CheckStatements() {
     {
       this->base->CheckStatements();
       const char *name = this->base->GetTypeName();
-      // all the methods are public
-      // no need to check the accessibility
+       
+       
       if (name)
         {
           if ((decl = Program::sym_table->Lookup(name)) != NULL)
@@ -372,7 +368,7 @@ void Call::CheckStatements() {
 		CheckArguments(dynamic_cast<FnDecl*>(decl));
 	    }
 	  else if ((typeid(*this->base->GetType()) == typeid(ArrayType))
-		   && !strcmp(this->field->GetName(), "length")) // arr.length() is supported
+		   && !strcmp(this->field->GetName(), "length"))  
 	    {
 	      this->type = Type::intType;
 	    }
@@ -384,19 +380,19 @@ void Call::CheckStatements() {
     }
   else
     {
-      // no base, just check whether the field is declared
+       
       decl = this->field->CheckIdDecl();
       if ((decl == NULL) || (typeid(*decl) != typeid(FnDecl)))
         {
 	  ReportError::IdentifierNotDeclared(this->field, LookingForFunction);
-	  decl = NULL; // to force not to get the type
-                       // and avoid cascading error reports
+	  decl = NULL;  
+                        
         }
       else
 	CheckArguments(dynamic_cast<FnDecl*>(decl));
     }
   if (decl != NULL)
-    this->type = decl->GetType(); // returnType
+    this->type = decl->GetType();  
 }
 
 NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) { 
