@@ -1,0 +1,18 @@
+
+*** Error line 12.
+  d[0] = NewArray(12, int);
+       ^
+*** Incompatible operands: 4ókÿ = À4ókÿ
+
+
+*** Error line 13.
+  c = NewArray(10, int);
+    ^
+*** Incompatible operands: p4ÆÜï = À4ókÿ
+
+
+*** Error line 17.
+  Print(c[0], " ", 2 * Binky(100, d[0], c));
+                                  ^^^^
+*** Incompatible argument 2: p3ókÿ given, p3ÆÜï expected
+

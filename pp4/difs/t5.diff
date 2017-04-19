@@ -1,0 +1,13 @@
+1,12d0
+< 
+< *** Error line 20.
+<   betsy = New(Cow);
+<               ^^^
+< *** No declaration found for variable 'Cow'
+< 
+< 
+< *** Error line 20.
+<   betsy = New(Cow);
+<           ^^^
+< *** No declaration found for function 'New'
+< 

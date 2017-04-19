@@ -1,0 +1,6 @@
+
+*** Error line 9.
+	a = NewArray(10, double);
+          ^
+*** Incompatible operands: ð  = @!ÓHü
+

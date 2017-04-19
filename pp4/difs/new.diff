@@ -1,0 +1,28 @@
+34,35c34,35
+<            ^^^
+< *** No declaration found for variable 'Cow'
+---
+>        ^^^^^^^^
+> *** Test expression must have boolean type
+38,41c38,53
+< *** Error line 13.
+<    if (New(Cow)) 1;
+<        ^^^
+< *** No declaration found for function 'New'
+---
+> *** Error line 14.
+>    if (a[3+5]) 1;
+>        ^^^^^^
+> *** Test expression must have boolean type
+> 
+> 
+> *** Error line 15.
+>    a[true && false];
+>      ^^^^^^^^^^^^^
+> *** Array subscript must be an integer
+> 
+> 
+> *** Error line 16.
+>    a[test(4)];
+>      ^^^^^^^
+> *** Array subscript must be an integer

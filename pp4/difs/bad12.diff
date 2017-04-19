@@ -1,0 +1,20 @@
+35,41c35
+< *** No declaration found for variable 'A'
+< 
+< 
+< *** Error line 15.
+<   New(A);
+<   ^^^
+< *** No declaration found for function 'New'
+---
+> *** No declaration found for class 'A'
+47,53c41
+< *** No declaration found for variable 'Treat'
+< 
+< 
+< *** Error line 16.
+<   New(Treat);
+<   ^^^
+< *** No declaration found for function 'New'
+---
+> *** No declaration found for class 'Treat'

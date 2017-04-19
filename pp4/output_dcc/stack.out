@@ -1,0 +1,18 @@
+
+*** Error line 8.
+      elems = NewArray(100, int);
+            ^
+*** Incompatible operands: U = `UÞ`ÿ
+
+
+*** Error line 29.
+  s = New(Stack);
+          ^^^^^
+*** No declaration found for variable 'Stack'
+
+
+*** Error line 29.
+  s = New(Stack);
+      ^^^
+*** No declaration found for function 'New'
+

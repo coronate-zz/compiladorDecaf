@@ -1,0 +1,30 @@
+
+*** Error line 42.
+   veggies = NewArray(2, Vegetable);
+           ^
+*** Incompatible operands:  Ì = ðÌ%±ü
+
+
+*** Error line 43.
+   veggies[0] = New(Squash);
+                    ^^^^^^
+*** No declaration found for variable 'Squash'
+
+
+*** Error line 43.
+   veggies[0] = New(Squash);
+                ^^^
+*** No declaration found for function 'New'
+
+
+*** Error line 44.
+   veggies[1] = New(Vegetable);
+                    ^^^^^^^^^
+*** No declaration found for variable 'Vegetable'
+
+
+*** Error line 44.
+   veggies[1] = New(Vegetable);
+                ^^^
+*** No declaration found for function 'New'
+

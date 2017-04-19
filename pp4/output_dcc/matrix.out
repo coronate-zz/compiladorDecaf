@@ -1,0 +1,54 @@
+
+*** Error line 44.
+    m = NewArray(10, int[]);
+      ^
+*** Incompatible operands: Àó = ôràü
+
+
+*** Error line 46.
+      m[i] = NewArray(10, int);
+           ^
+*** Incompatible operands:  óràü = Ðóràü
+
+
+*** Error line 85.
+    m = NewArray(10, SparseItem);
+      ^
+*** Incompatible operands: Àócompatible operands:   = ôràü
+
+
+*** Error line 109.
+      elem = New(SparseItem);
+                 ^^^^^^^^^^
+*** No declaration found for variable 'SparseItem'
+
+
+*** Error line 109.
+      elem = New(SparseItem);
+             ^^^
+*** No declaration found for function 'New'
+
+
+*** Error line 129.
+  m = New(DenseMatrix);
+          ^^^^^^^^^^^
+*** No declaration found for variable 'DenseMatrix'
+
+
+*** Error line 129.
+  m = New(DenseMatrix);
+      ^^^
+*** No declaration found for function 'New'
+
+
+*** Error line 136.
+  m = New(SparseMatrix);
+          ^^^^^^^^^^^^
+*** No declaration found for variable 'SparseMatrix'
+
+
+*** Error line 136.
+  m = New(SparseMatrix);
+      ^^^
+*** No declaration found for function 'New'
+

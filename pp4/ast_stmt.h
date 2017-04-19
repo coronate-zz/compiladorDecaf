@@ -1,0 +1,163 @@
+
+
+
+#ifndef _H_ast_stmt
+#define _H_ast_stmt
+
+#include "ast.h"
+#include "hashtable.h"
+#include "list.h"
+
+
+class Decl;
+class VarDecl;
+class Expr;
+class IntConstant;
+
+class Program : public Node
+{
+  protected:
+     List<Decl*> *decls;
+
+  public:
+     Program(List<Decl*> *declList);
+     void stmtReview();
+     void errorDeclReview();
+     static Hashtable<Decl*> *sym_table;  
+};
+
+class Stmt : public Node
+{
+  public:
+     Stmt() : Node() {}
+     Stmt(yyltype loc) : Node(loc) {}
+};
+
+class StmtBlock : public Stmt 
+{
+  protected:
+    List<VarDecl*> *decls;
+    List<Stmt*> *stmts;
+    Hashtable<Decl*> *sym_table;  
+                                  
+
+  public:
+    StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
+    void stmtReview();
+    void errorDeclReview();
+    Hashtable<Decl*> *GetSymTable() { return sym_table; }
+};
+
+  
+class ConditionalStmt : public Stmt
+{
+  protected:
+    Expr *test;
+    Stmt *body;
+
+  public:
+    ConditionalStmt(Expr *testExpr, Stmt *body);
+    void stmtReview();
+    void errorDeclReview();
+};
+
+class LoopStmt : public ConditionalStmt 
+{
+  public:
+    LoopStmt(Expr *testExpr, Stmt *body)
+            : ConditionalStmt(testExpr, body) {}
+};
+
+class ForStmt : public LoopStmt 
+{
+  protected:
+    Expr *init, *step;
+  
+  public:
+    ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
+    void stmtReview();
+};
+
+class WhileStmt : public LoopStmt 
+{
+  public:
+    WhileStmt(Expr *test, Stmt *body) : LoopStmt(test, body) {}
+    void stmtReview();
+ };
+
+class IfStmt : public ConditionalStmt 
+{
+  protected:
+    Stmt *elseBody;
+  
+  public:
+    IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
+    void stmtReview();
+    void errorDeclReview();
+};
+
+class BreakStmt : public Stmt 
+{
+  public:
+    BreakStmt(yyltype loc) : Stmt(loc) {}
+    void stmtReview();
+};
+
+class ReturnStmt : public Stmt  
+{
+  protected:
+    Expr *expr;
+  
+  public:
+    ReturnStmt(yyltype loc, Expr *expr);
+    void stmtReview();
+};
+
+class PrintStmt : public Stmt
+{
+  protected:
+    List<Expr*> *args;
+    
+  public:
+    PrintStmt(List<Expr*> *arguments);
+    void stmtReview();
+};
+
+
+
+class DefaultStmt : public Stmt
+{
+  protected:
+    List<Stmt*> *stmts;
+
+  public:
+    DefaultStmt(List<Stmt*> *sts);
+    void stmtReview();
+    void errorDeclReview();
+};
+
+
+class CaseStmt : public DefaultStmt
+{
+  protected:
+    IntConstant *intconst;
+
+  public:
+    CaseStmt(IntConstant *ic, List<Stmt*> *sts);
+};
+
+class SwitchStmt : public Stmt
+{
+  protected:
+    Expr *expr;
+    List<CaseStmt*> *cases;
+    DefaultStmt *defaults;
+
+  public:
+    SwitchStmt(Expr *e, List<CaseStmt*> *cs, DefaultStmt *ds);
+    void stmtReview();
+    void errorDeclReview();
+};
+
+
+#endif

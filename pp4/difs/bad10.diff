@@ -1,0 +1,10 @@
+17,23c17
+< *** No declaration found for variable 'Missing'
+< 
+< 
+< *** Error line 5.
+<    var = New(Missing);
+<          ^^^
+< *** No declaration found for function 'New'
+---
+> *** No declaration found for class 'Missing'

@@ -1,0 +1,25 @@
+1,24d0
+< 
+< *** Error line 33.
+<   green = New(Color);
+<               ^^^^^
+< *** No declaration found for variable 'Color'
+< 
+< 
+< *** Error line 33.
+<   green = New(Color);
+<           ^^^
+< *** No declaration found for function 'New'
+< 
+< 
+< *** Error line 35.
+<   s = New(Rectangle);
+<           ^^^^^^^^^
+< *** No declaration found for variable 'Rectangle'
+< 
+< 
+< *** Error line 35.
+<   s = New(Rectangle);
+<       ^^^
+< *** No declaration found for function 'New'
+< 

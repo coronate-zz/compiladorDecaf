@@ -1,0 +1,7 @@
+26,31d25
+< *** Error line 9.
+<    arr = NewArray(2, string);
+<        ^
+< *** Incompatible operands: ÐÇç¾ =  È4kü
+< 
+< 

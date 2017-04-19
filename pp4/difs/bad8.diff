@@ -1,0 +1,13 @@
+2,13d1
+< *** Error line 17.
+<   red = New(Honda);
+<             ^^^^^
+< *** No declaration found for variable 'Honda'
+< 
+< 
+< *** Error line 17.
+<   red = New(Honda);
+<         ^^^
+< *** No declaration found for function 'New'
+< 
+< 

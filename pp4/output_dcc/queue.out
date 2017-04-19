@@ -1,0 +1,36 @@
+
+*** Error line 29.
+    this.head = New(QueueItem);
+                    ^^^^^^^^^
+*** No declaration found for variable 'QueueItem'
+
+
+*** Error line 29.
+    this.head = New(QueueItem);
+                ^^^
+*** No declaration found for function 'New'
+
+
+*** Error line 34.
+    temp = New(QueueItem);
+               ^^^^^^^^^
+*** No declaration found for variable 'QueueItem'
+
+
+*** Error line 34.
+    temp = New(QueueItem);
+           ^^^
+*** No declaration found for function 'New'
+
+
+*** Error line 56.
+  q = New(Queue);
+          ^^^^^
+*** No declaration found for variable 'Queue'
+
+
+*** Error line 56.
+  q = New(Queue);
+      ^^^
+*** No declaration found for function 'New'
+

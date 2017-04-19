@@ -1,0 +1,13 @@
+1,12d0
+< 
+< *** Error line 5.
+<   b = NewArray(1, string);
+<     ^
+< *** Incompatible operands: P# =  #ÚŸÿ
+< 
+< 
+< *** Error line 6.
+<   return NewArray(d, int);
+<          ^^^^^^^^^^^^^^^^
+< *** Incompatible return:  #ÚŸÿ given, P#Êe expected
+< 

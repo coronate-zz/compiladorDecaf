@@ -1,0 +1,4 @@
+11c11
+< *** Incompatible operands: pX = ÀX-åü
+---
+> *** Incompatible operands: double[] = Binky[]
