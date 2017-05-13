@@ -2,19 +2,19 @@
 *** Error line 44.
     m = NewArray(10, int[]);
       ^
-*** Incompatible operands: Àó = ôràü
+*** Incompatible operands: €` = Ğ`Vı
 
 
 *** Error line 46.
       m[i] = NewArray(10, int);
            ^
-*** Incompatible operands:  óràü = Ğóràü
+*** Incompatible operands: ``Vı = `Vı
 
 
 *** Error line 85.
     m = NewArray(10, SparseItem);
       ^
-*** Incompatible operands: Àócompatible operands:   = ôràü
+*** Incompatible operands: €`compatible operands: ` = Ğ`Vı
 
 
 *** Error line 109.

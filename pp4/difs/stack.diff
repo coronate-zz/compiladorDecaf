@@ -3,7 +3,7 @@
 < *** Error line 8.
 <       elems = NewArray(100, int);
 <             ^
-< *** Incompatible operands: U = `UÞ`ÿ
+< *** Incompatible operands: š = `šý#ý
 < 
 < 
 < *** Error line 29.

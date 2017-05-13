@@ -1,0 +1,19 @@
+1,18d0
+< 
+< *** Error line 44.
+<     m = NewArray(10, int[]);
+<       ^
+< *** Incompatible operands: Ðî =  ïº¯ý
+< 
+< 
+< *** Error line 46.
+<       m[i] = NewArray(10, int);
+<            ^
+< *** Incompatible operands: °îº¯ý = àîº¯ý
+< 
+< 
+< *** Error line 85.
+<     m = NewArray(10, SparseItem);
+<       ^
+< *** Incompatible operands: Ðîcompatible operands: ° =  ïº¯ý
+< 

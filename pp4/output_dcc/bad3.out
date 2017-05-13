@@ -8,7 +8,7 @@
 *** Error line 11.
   arr = NewArray(5, Binky);
       ^
-*** Incompatible operands: pX = ÀX-åü
+*** Incompatible operands:  ñ = ğñåÊş
 
 
 *** Error line 13.

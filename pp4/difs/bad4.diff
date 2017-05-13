@@ -2,10 +2,10 @@
 < *** Error line 10.
 <   pens = NewArray(2, int);
 <        ^
-< *** Incompatible operands: ÐN =  O¦øý
+< *** Incompatible operands:  = PáÉæÿ
 < 
 < 
 23c17
-< *** pNñ— has no such field 'color'
+< ***  àôÑË has no such field 'color'
 ---
 > *** int[] has no such field 'color'

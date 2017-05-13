@@ -3,19 +3,19 @@
 < *** Error line 44.
 <     m = NewArray(10, int[]);
 <       ^
-< *** Incompatible operands: Àó = ôràü
+< *** Incompatible operands: €` = Ð`Vý
 < 
 < 
 < *** Error line 46.
 <       m[i] = NewArray(10, int);
 <            ^
-< *** Incompatible operands:  óràü = Ðóràü
+< *** Incompatible operands: ``Vý = `Vý
 < 
 < 
 < *** Error line 85.
 <     m = NewArray(10, SparseItem);
 <       ^
-< *** Incompatible operands: Àócompatible operands:   = ôràü
+< *** Incompatible operands: €`compatible operands: ` = Ð`Vý
 < 
 < 
 < *** Error line 109.

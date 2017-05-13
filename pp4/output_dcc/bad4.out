@@ -8,7 +8,7 @@
 *** Error line 10.
   pens = NewArray(2, int);
        ^
-*** Incompatible operands: ÐN =  O¦øý
+*** Incompatible operands:  = PáÉæÿ
 
 
 *** Error line 11.
@@ -20,5 +20,5 @@
 *** Error line 12.
   pens.color = 5;
        ^^^^^
-*** pNñ— has no such field 'color'
+***  àôÑË has no such field 'color'
 

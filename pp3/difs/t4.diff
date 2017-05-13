@@ -1,0 +1,7 @@
+1,6d0
+< 
+< *** Error line 5.
+<   return NewArray(d, int);
+<   ^^^^^^
+< *** Incompatible return:  Q»6ÿ given, PQ expected
+< 

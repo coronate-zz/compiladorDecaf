@@ -1,33 +1,28 @@
-/* File: ast_stmt.h
- * ----------------
- * The Stmt class and its subclasses are used to represent
- * statements in the parse tree.  For each statment in the
- * language (for, if, return, etc.) there is a corresponding
- * node class for that construct. 
- *
- * pp3: You will need to extend the Stmt classes to implement
- * semantic analysis for rules pertaining to statements.
- */
 
 
 #ifndef _H_ast_stmt
 #define _H_ast_stmt
 
-#include "list.h"
 #include "ast.h"
+#include "hashtable.h"
+#include "list.h"
+
 
 class Decl;
 class VarDecl;
 class Expr;
-  
+class IntConstant;
+
 class Program : public Node
 {
   protected:
      List<Decl*> *decls;
-     
+
   public:
      Program(List<Decl*> *declList);
-     void Check();
+     void ReviewStatements();
+     void errorDeclReview();
+     static Hashtable<Decl*> *tablaHash;  
 };
 
 class Stmt : public Node
@@ -42,9 +37,14 @@ class StmtBlock : public Stmt
   protected:
     List<VarDecl*> *decls;
     List<Stmt*> *stmts;
-    
+    Hashtable<Decl*> *tablaHash;  
+                                  
+
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
+    void ReviewStatements();
+    void errorDeclReview();
+    Hashtable<Decl*> *GetSymTable() { return tablaHash; }
 };
 
   
@@ -53,9 +53,11 @@ class ConditionalStmt : public Stmt
   protected:
     Expr *test;
     Stmt *body;
-  
+
   public:
     ConditionalStmt(Expr *testExpr, Stmt *body);
+    void ReviewStatements();
+    void errorDeclReview();
 };
 
 class LoopStmt : public ConditionalStmt 
@@ -72,13 +74,15 @@ class ForStmt : public LoopStmt
   
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
+    void ReviewStatements();
 };
 
 class WhileStmt : public LoopStmt 
 {
   public:
     WhileStmt(Expr *test, Stmt *body) : LoopStmt(test, body) {}
-};
+    void ReviewStatements();
+ };
 
 class IfStmt : public ConditionalStmt 
 {
@@ -87,12 +91,15 @@ class IfStmt : public ConditionalStmt
   
   public:
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
+    void ReviewStatements();
+    void errorDeclReview();
 };
 
 class BreakStmt : public Stmt 
 {
   public:
     BreakStmt(yyltype loc) : Stmt(loc) {}
+    void ReviewStatements();
 };
 
 class ReturnStmt : public Stmt  
@@ -102,6 +109,7 @@ class ReturnStmt : public Stmt
   
   public:
     ReturnStmt(yyltype loc, Expr *expr);
+    void ReviewStatements();
 };
 
 class PrintStmt : public Stmt
@@ -111,6 +119,43 @@ class PrintStmt : public Stmt
     
   public:
     PrintStmt(List<Expr*> *arguments);
+    void ReviewStatements();
+};
+
+
+
+class DefaultStmt : public Stmt
+{
+  protected:
+    List<Stmt*> *stmts;
+
+  public:
+    DefaultStmt(List<Stmt*> *sts);
+    void ReviewStatements();
+    void errorDeclReview();
+};
+
+
+class CaseStmt : public DefaultStmt
+{
+  protected:
+    IntConstant *intconst;
+
+  public:
+    CaseStmt(IntConstant *ic, List<Stmt*> *sts);
+};
+
+class SwitchStmt : public Stmt
+{
+  protected:
+    Expr *expr;
+    List<CaseStmt*> *cases;
+    DefaultStmt *defaults;
+
+  public:
+    SwitchStmt(Expr *e, List<CaseStmt*> *cs, DefaultStmt *ds);
+    void ReviewStatements();
+    void errorDeclReview();
 };
 
 

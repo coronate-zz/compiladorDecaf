@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 programas_frag=($(ls samples | grep -oP '.*\.frag' | grep -oP '.*\.'))
 programas_decaf=($(ls samples | grep -oP '.*\.decaf' | grep -oP '.*\.'))
 
