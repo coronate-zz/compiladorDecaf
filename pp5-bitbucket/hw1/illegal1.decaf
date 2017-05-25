@@ -1,0 +1,37 @@
+/*
+Illegal1.decaf written by Andrew Shearer
+
+Syntax Errors:
+1 A Prototype must be a function
+2 A class can only extend one class
+3 Type missing for i
+
+*/
+
+
+interface Jumper {
+	int a; // error 1
+	void jump();
+}
+class Cat {}
+class Animal {}
+class Tiger extends Cat, Animal { // error 2
+	int foo(i) { // error 3
+		return 0;
+	}
+} 
+
+class Test {
+	void test() {
+		int a;
+		int b;
+		{{{ Print(a=b, b=a) }}}
+	}
+}
+
+void main() {
+
+	{
+		Print("Hello!");
+	}
+}
