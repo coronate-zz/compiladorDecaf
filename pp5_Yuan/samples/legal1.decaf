@@ -1,0 +1,73 @@
+/*
+Legal1.decaf written by Andrew Shearer
+
+Function:
+Test OOP featuress like method overriding, interfaces and inheritance
+
+Input:
+None
+
+Output:
+Animal Sound
+5
+Quack
+-5
+
+*/
+
+class Animal {
+
+	int position;
+
+	string talk() {
+		return "Animal Sound";
+	}
+	void moveRight(int spaces) {
+		position = position + spaces;
+	}
+	void moveLeft(int spaces) {
+		position = position - spaces;
+	}
+	int getPosition() {
+		return position;
+	}
+	void init() {
+		position = 0;
+	}
+}
+
+class Duck extends Animal {
+	string talk() {
+		return "Quack";
+	}
+}
+
+void main() {
+	Animal a;
+	Duck d;
+
+	// do animal things
+	a = New(Animal);
+	a.init();
+	
+	Print(a.talk());
+	Print("\n");
+	
+	a.moveRight(5);
+
+	Print(a.getPosition());
+	Print("\n");
+		
+
+	// do duck things
+	d = New(Duck);
+	d.init();
+	
+	Print(d.talk());
+	Print("\n");
+	
+	d.moveLeft(5);
+
+	Print(d.getPosition());
+	Print("\n");
+}

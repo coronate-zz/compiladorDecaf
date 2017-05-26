@@ -1,0 +1,25 @@
+About the PP5 Design
+Author: Deyuan Guo
+Nov. 2013
+--------------------
+
+In the PP5 project, the Three Address Code (TAC) are generated from AST.
+Then the TAC are converted into MIPS ASM, which can be executed by the
+SPIM simulator.
+
+Step:
+1. Check the existance of main function.
+2. Assign offsets for class members and global variables.
+3. Add prefix to all the functions and class methods.
+4. Traverse the AST and generate TAC.
+5. Generate MIPS ASM from TAC.
+
+Note:
+1. The signature of main function is 'void main() {}'. Each Decaf program
+   must contain a valid main function.
+2. Class methods are dynamically dispatched.
+3. Interface and double type are not supported by compiler back end yet.
+4. ReadLine function can only read strings which are less than 128 bytes, and
+   it will alloc new space for new input strings.
+5. Switch/case and postfix expressions are supported.
+
