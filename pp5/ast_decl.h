@@ -20,6 +20,10 @@ class NamedType;
 class Identifier;
 class Stmt;
 
+
+
+
+
 class Decl : public Node 
 {
   protected:
@@ -30,6 +34,18 @@ class Decl : public Node
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
 class VarDecl : public Decl 
 {
   protected:
@@ -38,6 +54,22 @@ class VarDecl : public Decl
   public:
     VarDecl(Identifier *name, Type *type);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class ClassDecl : public Decl 
 {
@@ -51,6 +83,25 @@ class ClassDecl : public Decl
               List<NamedType*> *implements, List<Decl*> *members);
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class InterfaceDecl : public Decl 
 {
   protected:
@@ -59,6 +110,9 @@ class InterfaceDecl : public Decl
   public:
     InterfaceDecl(Identifier *name, List<Decl*> *members);
 };
+
+
+
 
 class FnDecl : public Decl 
 {

@@ -21,12 +21,27 @@ class NamedType; // for new
 class Type; // for NewArray
 
 
+
+
+
 class Expr : public Stmt 
 {
   public:
     Expr(yyltype loc) : Stmt(loc) {}
     Expr() : Stmt() {}
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* This node type is used for those places where an expression is optional.
  * We could use a NULL pointer, but then it adds a lot of checking for
@@ -35,6 +50,9 @@ class EmptyExpr : public Expr
 {
   public:
 };
+
+
+
 
 class IntConstant : public Expr 
 {
@@ -45,6 +63,10 @@ class IntConstant : public Expr
     IntConstant(yyltype loc, int val);
 };
 
+
+
+
+
 class DoubleConstant : public Expr 
 {
   protected:
@@ -53,6 +75,10 @@ class DoubleConstant : public Expr
   public:
     DoubleConstant(yyltype loc, double val);
 };
+
+
+
+
 
 class BoolConstant : public Expr 
 {
@@ -63,6 +89,10 @@ class BoolConstant : public Expr
     BoolConstant(yyltype loc, bool val);
 };
 
+
+
+
+
 class StringConstant : public Expr 
 { 
   protected:
@@ -72,11 +102,19 @@ class StringConstant : public Expr
     StringConstant(yyltype loc, const char *val);
 };
 
+
+
+
+
 class NullConstant: public Expr 
 {
   public: 
     NullConstant(yyltype loc) : Expr(loc) {}
 };
+
+
+
+
 
 class Operator : public Node 
 {
@@ -88,6 +126,8 @@ class Operator : public Node
     friend std::ostream& operator<<(std::ostream& out, Operator *o) { return out << o->tokenString; }
  };
  
+
+
 class CompoundExpr : public Expr
 {
   protected:
@@ -99,6 +139,10 @@ class CompoundExpr : public Expr
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
 };
 
+
+
+
+
 class ArithmeticExpr : public CompoundExpr 
 {
   public:
@@ -106,11 +150,36 @@ class ArithmeticExpr : public CompoundExpr
     ArithmeticExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
 };
 
+
+
+
+
+
+
+
+
+
+
+
 class RelationalExpr : public CompoundExpr 
 {
   public:
     RelationalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class EqualityExpr : public CompoundExpr 
 {
@@ -118,6 +187,14 @@ class EqualityExpr : public CompoundExpr
     EqualityExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "EqualityExpr"; }
 };
+
+
+
+
+
+
+
+
 
 class LogicalExpr : public CompoundExpr 
 {
@@ -127,6 +204,20 @@ class LogicalExpr : public CompoundExpr
     const char *GetPrintNameForNode() { return "LogicalExpr"; }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class AssignExpr : public CompoundExpr 
 {
   public:
@@ -134,17 +225,32 @@ class AssignExpr : public CompoundExpr
     const char *GetPrintNameForNode() { return "AssignExpr"; }
 };
 
+
+
+
+
 class LValue : public Expr 
 {
   public:
     LValue(yyltype loc) : Expr(loc) {}
 };
 
+
+
+
+
+
+
+
 class This : public Expr 
 {
   public:
     This(yyltype loc) : Expr(loc) {}
 };
+
+
+
+
 
 class ArrayAccess : public LValue 
 {
@@ -154,6 +260,21 @@ class ArrayAccess : public LValue
   public:
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Note that field access is used both for qualified names
  * base.field and just field without qualification. We don't
